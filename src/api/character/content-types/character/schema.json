@@ -1,0 +1,61 @@
+{
+  "kind": "collectionType",
+  "collectionName": "characters",
+  "info": {
+    "singularName": "character",
+    "pluralName": "characters",
+    "displayName": "Character"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "level": {
+      "type": "integer",
+      "required": true,
+      "default": 1,
+      "min": 1,
+      "max": 20
+    },
+    "characterClass": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "Fighter",
+        "Ranger",
+        "Wizard",
+        "Rogue",
+        "Cleric",
+        "Druid",
+        "Monk",
+        "Barbarian",
+        "Bard",
+        "Paladin",
+        "Sorcerer",
+        "Warlock",
+        "Artificer"
+      ]
+    },
+    "experiencePoints": {
+      "type": "integer",
+      "required": true,
+      "default": 0,
+      "min": 0
+    },
+    "campaign": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::campaign.campaign",
+      "required": true,
+      "inversedBy": "characters"
+    },
+    "lore": {
+      "type": "text"
+    }
+  }
+}

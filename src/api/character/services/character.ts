@@ -21,4 +21,16 @@ export default factories.createCoreService("api::character.character", () => ({
     });
     return updatedCharacter;
   },
+  async awardExperience(characterDocumentId: string, points: number) {
+    const character = await super.findOne(characterDocumentId);
+    if (!character) {
+      throw new errors.NotFoundError("Character not found");
+    }
+    const updatedCharacter = await super.update(characterDocumentId, {
+      data: {
+        experiencePoints: character.experiencePoints + points,
+      },
+    });
+    return updatedCharacter;
+  },
 }));

@@ -12,6 +12,15 @@ const routes: Core.RouterConfig = {
         middlewares: [],
       },
     },
+    {
+      method: "POST",
+      path: "/characters/:documentId/award-experience",
+      handler: "api::character.character.awardExperience",
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };
 

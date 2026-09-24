@@ -21,6 +21,15 @@ const routes: Core.RouterConfig = {
         middlewares: [],
       },
     },
+    {
+      method: "GET",
+      path: "/characters/search",
+      handler: "api::character.character.search",
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };
 

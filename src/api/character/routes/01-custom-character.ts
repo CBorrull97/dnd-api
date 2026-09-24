@@ -30,6 +30,15 @@ const routes: Core.RouterConfig = {
         middlewares: [],
       },
     },
+    {
+      method: "GET",
+      path: "/characters/leaderboard",
+      handler: "api::character.character.getLeaderBoard",
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };
 

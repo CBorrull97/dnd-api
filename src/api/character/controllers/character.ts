@@ -70,5 +70,11 @@ export default factories.createCoreController(
       const sanitizedResults = await this.sanitizeOutput!(results, ctx);
       return this.transformResponse!(sanitizedResults);
     },
+    async getLeaderBoard() {
+      const rankedCharacters = await strapi
+        .service("api::character.character")
+        .getLeaderBoard();
+      return this.transformResponse!(rankedCharacters);
+    },
   }),
 );

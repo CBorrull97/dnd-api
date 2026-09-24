@@ -5,6 +5,7 @@
 import { factories } from "@strapi/strapi";
 import { errors } from "@strapi/utils";
 import type { CharacterClass } from "../utils/character-class";
+import { LeaderBoard } from "../utils/character-leaderBoard";
 
 export default factories.createCoreService(
   "api::character.character",
@@ -52,6 +53,40 @@ export default factories.createCoreService(
           },
         });
       return characters;
+    },
+
+    async getLeaderBoard(): Promise<LeaderBoard[]> {
+      const characters = await strapi.db
+        .query("api::character.character")
+        .findMany({
+          limit: 5,
+          orderBy: {
+            experiencePoints: "desc",
+            name: "asc",
+          },
+        });
+      if (characters.length === 0) {
+        return [];
+      }
+      /*const charactersWithRank = characters.map((character, index) => ({
+        ...character,
+        rank: index + 1,
+      }));*/
+      const rankedCharacters: LeaderBoard[] = [];
+      let rank = 1;
+      for (const character of characters) {
+        const rankedCharacter: LeaderBoard = {
+          rank: rank,
+          documentId: character.documentId,
+          name: character.name,
+          characterClass: character.characterClass,
+          level: character.level,
+          experiencePoints: character.experiencePoints,
+        };
+        rankedCharacters.push(rankedCharacter);
+        rank++;
+      }
+      return rankedCharacters;
     },
   }),
 );

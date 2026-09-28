@@ -9,7 +9,7 @@ const routes: Core.RouterConfig = {
       handler: "api::character.character.levelUp",
       config: {
         policies: [],
-        middlewares: [],
+        middlewares: ["api::character.audit-character-action"],
       },
     },
     {
@@ -18,7 +18,7 @@ const routes: Core.RouterConfig = {
       handler: "api::character.character.awardExperience",
       config: {
         policies: [],
-        middlewares: [],
+        middlewares: ["api::character.audit-character-action"],
       },
     },
     {

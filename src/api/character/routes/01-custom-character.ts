@@ -36,7 +36,7 @@ const routes: Core.RouterConfig = {
       handler: "api::character.character.getLeaderBoard",
       config: {
         policies: [],
-        middlewares: [],
+        middlewares: ["api::character.response-time"],
       },
     },
   ],

@@ -17,5 +17,22 @@ export default factories.createCoreController(
       }
       return this.transformResponse!(campaignSummary);
     },
+
+    async getTopCharacter(ctx) {
+      const { documentId } = ctx.params;
+      const topCharacter = await strapi
+        .service("api::campaign.campaign")
+        .getTopCharacter(documentId);
+      if (topCharacter === undefined) {
+        return ctx.notFound("Campaign not found");
+      }
+      if (topCharacter === null) {
+        return {
+          data: null,
+          meta: {},
+        };
+      }
+      return this.transformResponse!(topCharacter);
+    },
   }),
 );

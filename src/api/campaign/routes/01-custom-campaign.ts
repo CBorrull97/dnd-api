@@ -12,6 +12,15 @@ const routes: Core.RouterConfig = {
         middlewares: [],
       },
     },
+    {
+      method: "GET",
+      path: "/campaigns/:documentId/top-character",
+      handler: "api::campaign.campaign.getTopCharacter",
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };
 

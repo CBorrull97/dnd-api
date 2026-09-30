@@ -53,5 +53,28 @@ export default factories.createCoreService(
         },
       });
     },
+    async getTopCharacter(documentId: string) {
+      const campaign = await super.findOne(documentId, {
+        populate: {
+          characters: {
+            sort: ["level:desc", "experiencePoints:desc"],
+          },
+        },
+      });
+      if(!campaign){
+        return undefined;
+      }
+      const characters = campaign.characters ?? [];
+      if(characters.length === 0){
+        return null;
+      }
+      const topCharacter = {
+        documentId: characters[0].documentId,
+        name: characters[0].name,
+        level: characters[0].level,
+        experiencePoints: characters[0].experiencePoints,
+      };
+      return topCharacter;
+    },
   }),
 );

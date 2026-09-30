@@ -45,5 +45,13 @@ export default factories.createCoreService(
       }
       return campaignSummary;
     },
+
+    async countActive() {
+      return strapi.documents("api::campaign.campaign").count({
+        filters: {
+          active: true,
+        },
+      });
+    },
   }),
 );

@@ -17,7 +17,7 @@ const routes: Core.RouterConfig = {
       path: "/characters/:documentId/award-experience",
       handler: "api::character.character.awardExperience",
       config: {
-        policies: [],
+        policies: ["api::character.require-game-master-key"],
         middlewares: ["api::character.audit-character-action"],
       },
     },

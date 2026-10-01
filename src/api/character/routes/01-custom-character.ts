@@ -39,6 +39,15 @@ const routes: Core.RouterConfig = {
         middlewares: ["api::character.response-time"],
       },
     },
+    {
+      method: "POST",
+      path: "/characters/:documentId/equip-armor",
+      handler: "api::character.character.equipArmor",
+      config: {
+        policies: ["api::character.require-game-master-key"],
+        middlewares: [],
+      },
+    },
   ],
 };
 

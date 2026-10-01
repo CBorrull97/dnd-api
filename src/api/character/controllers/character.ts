@@ -76,5 +76,24 @@ export default factories.createCoreController(
         .getLeaderBoard();
       return this.transformResponse!(rankedCharacters);
     },
+
+    async equipArmor(ctx) {
+      const { documentId } = ctx.params;
+      const armorDocumentId = ctx.request.body?.data?.armorDocumentId;
+      if (
+        typeof armorDocumentId !== "string" ||
+        armorDocumentId.trim().length === 0
+      ) {
+        return ctx.badRequest("armorDocumentId must be a non-empty string");
+      }
+      const updatedCharacter = await strapi
+        .service("api::character.character")
+        .equipArmor(documentId, armorDocumentId);
+      const sanitizedCharacter = await this.sanitizeOutput!(
+        updatedCharacter,
+        ctx,
+      );
+      return this.transformResponse!(sanitizedCharacter);
+    },
   }),
 );

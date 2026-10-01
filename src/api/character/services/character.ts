@@ -68,10 +68,6 @@ export default factories.createCoreService(
       if (characters.length === 0) {
         return [];
       }
-      /*const charactersWithRank = characters.map((character, index) => ({
-        ...character,
-        rank: index + 1,
-      }));*/
       const rankedCharacters: LeaderBoard[] = [];
       let rank = 1;
       for (const character of characters) {
@@ -87,6 +83,42 @@ export default factories.createCoreService(
         rank++;
       }
       return rankedCharacters;
+    },
+
+    async equipArmor(characterDocumentId: string, armorDocumentId: string) {
+      const character = await super.findOne(characterDocumentId, {
+        populate: {
+          armors: true,
+        },
+      });
+      if (!character) {
+        throw new errors.NotFoundError("Character not found");
+      }
+      const armor = await strapi
+        .service("api::armor.armor")
+        .findOne(armorDocumentId);
+      if (!armor) {
+        throw new errors.NotFoundError("Armor not found");
+      }
+      const armors = character.armors ?? [];
+      let armorPossession = false;
+      for (const ownedArmor of armors) {
+        if (ownedArmor.documentId === armorDocumentId) {
+          armorPossession = true;
+        }
+      }
+      if (!armorPossession) {
+        throw new errors.ValidationError("Character does not own this armor");
+      }
+      const updatedCharacter = await super.update(characterDocumentId, {
+        data: {
+          equippedArmor: armorDocumentId,
+        },
+        populate: {
+          equippedArmor: true,
+        },
+      });
+      return updatedCharacter;
     },
   }),
 );

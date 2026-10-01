@@ -34,5 +34,17 @@ export default factories.createCoreController(
       }
       return this.transformResponse!(topCharacter);
     },
+
+    async close(ctx) {
+      const { documentId } = ctx.params;
+      const updatedCampaign = await strapi
+        .service("api::campaign.campaign")
+        .close(documentId);
+      const sanitizedCampaign = await this.sanitizeOutput!(
+        updatedCampaign,
+        ctx,
+      );
+      return this.transformResponse!(sanitizedCampaign);
+    },
   }),
 );

@@ -21,6 +21,15 @@ const routes: Core.RouterConfig = {
         middlewares: [],
       },
     },
+    {
+      method: "POST",
+      path: "/campaigns/:documentId/close",
+      handler: "api::campaign.campaign.close",
+      config: {
+        policies: ["api::character.require-game-master-key"],
+        middlewares: [],
+      },
+    },
   ],
 };
 

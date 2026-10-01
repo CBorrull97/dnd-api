@@ -4,15 +4,18 @@
 
 import { factories } from "@strapi/strapi";
 import type { CampaignSummary } from "../utils/campaign-summary";
+import { errors } from "@strapi/utils";
 
 export default factories.createCoreService(
   "api::campaign.campaign",
   ({ strapi }) => ({
-    async getSummary(documentId: string): Promise<CampaignSummary | undefined> {
+    async getSummary(
+      campaignDocumentId: string,
+    ): Promise<CampaignSummary | undefined> {
       const campaign = await strapi
         .documents("api::campaign.campaign")
         .findOne({
-          documentId: documentId,
+          documentId: campaignDocumentId,
           populate: {
             characters: true,
           },
@@ -25,7 +28,7 @@ export default factories.createCoreService(
       }
       const characters = campaign.characters ?? [];
       const campaignSummary: CampaignSummary = {
-        documentId: documentId,
+        documentId: campaignDocumentId,
         name: campaign.name,
         characterCount: characters.length,
         averageLevel: 0,
@@ -53,19 +56,19 @@ export default factories.createCoreService(
         },
       });
     },
-    async getTopCharacter(documentId: string) {
-      const campaign = await super.findOne(documentId, {
+    async getTopCharacter(campaignDocumentId: string) {
+      const campaign = await super.findOne(campaignDocumentId, {
         populate: {
           characters: {
             sort: ["level:desc", "experiencePoints:desc"],
           },
         },
       });
-      if(!campaign){
+      if (!campaign) {
         return undefined;
       }
       const characters = campaign.characters ?? [];
-      if(characters.length === 0){
+      if (characters.length === 0) {
         return null;
       }
       const topCharacter = {
@@ -75,6 +78,22 @@ export default factories.createCoreService(
         experiencePoints: characters[0].experiencePoints,
       };
       return topCharacter;
+    },
+
+    async close(campaignDocumentId: string) {
+      const campaign = await super.findOne(campaignDocumentId);
+      if (!campaign) {
+        throw new errors.NotFoundError("Campaign not found");
+      }
+      if (!campaign.active) {
+        return campaign;
+      }
+      const updatedCampaign = await super.update(campaignDocumentId, {
+        data: {
+          active: false,
+        },
+      });
+      return updatedCampaign;
     },
   }),
 );

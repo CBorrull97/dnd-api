@@ -56,6 +56,30 @@
     },
     "lore": {
       "type": "text"
+    },
+    "weapons": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::weapon.weapon",
+      "mappedBy": "characters"
+    },
+    "armors": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::armor.armor",
+      "mappedBy": "characters"
+    },
+    "equippedArmor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::armor.armor",
+      "inversedBy": "equippedByCharacters"
+    },
+    "equippedWeapons": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::weapon.weapon",
+      "mappedBy": "equippedByCharacters"
     }
   }
 }

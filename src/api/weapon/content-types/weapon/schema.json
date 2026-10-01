@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "weapons",
+  "info": {
+    "singularName": "weapon",
+    "pluralName": "weapons",
+    "displayName": "Weapon"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "weaponType": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Simple Melee",
+      "enum": [
+        "Simple Melee",
+        "Simple Ranged",
+        "Martial Melee",
+        "Martial Ranged"
+      ]
+    },
+    "damage": {
+      "type": "string",
+      "required": false
+    },
+    "damageType": {
+      "type": "enumeration",
+      "enum": [
+        "Slashing",
+        "Piercing",
+        "Bludgeoning"
+      ]
+    },
+    "characters": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::character.character",
+      "inversedBy": "weapons"
+    },
+    "equippedByCharacters": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::character.character",
+      "inversedBy": "equippedWeapons"
+    }
+  }
+}

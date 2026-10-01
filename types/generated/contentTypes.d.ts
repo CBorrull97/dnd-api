@@ -443,6 +443,55 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiArmorArmor extends Struct.CollectionTypeSchema {
+  collectionName: 'armors';
+  info: {
+    displayName: 'Armor';
+    pluralName: 'armors';
+    singularName: 'armor';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    armorType: Schema.Attribute.Enumeration<['Light', 'Medium', 'Heavy']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Light'>;
+    baseArmorClass: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 18;
+          min: 11;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<11>;
+    characters: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::character.character'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    equippedByCharacters: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::character.character'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::armor.armor'> &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    publishedAt: Schema.Attribute.DateTime;
+    stealthDisadvantage: Schema.Attribute.Boolean & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCampaignCampaign extends Struct.CollectionTypeSchema {
   collectionName: 'campaigns';
   info: {
@@ -490,6 +539,7 @@ export interface ApiCharacterCharacter extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    armors: Schema.Attribute.Relation<'manyToMany', 'api::armor.armor'>;
     campaign: Schema.Attribute.Relation<'manyToOne', 'api::campaign.campaign'> &
       Schema.Attribute.Required;
     characterClass: Schema.Attribute.Enumeration<
@@ -513,6 +563,11 @@ export interface ApiCharacterCharacter extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    equippedArmor: Schema.Attribute.Relation<'manyToOne', 'api::armor.armor'>;
+    equippedWeapons: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::weapon.weapon'
+    >;
     experiencePoints: Schema.Attribute.Integer &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
@@ -544,6 +599,52 @@ export interface ApiCharacterCharacter extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    weapons: Schema.Attribute.Relation<'manyToMany', 'api::weapon.weapon'>;
+  };
+}
+
+export interface ApiWeaponWeapon extends Struct.CollectionTypeSchema {
+  collectionName: 'weapons';
+  info: {
+    displayName: 'Weapon';
+    pluralName: 'weapons';
+    singularName: 'weapon';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    characters: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::character.character'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    damage: Schema.Attribute.String;
+    damageType: Schema.Attribute.Enumeration<
+      ['Slashing', 'Piercing', 'Bludgeoning']
+    >;
+    equippedByCharacters: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::character.character'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::weapon.weapon'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    weaponType: Schema.Attribute.Enumeration<
+      ['Simple Melee', 'Simple Ranged', 'Martial Melee', 'Martial Ranged']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Simple Melee'>;
   };
 }
 
@@ -1058,8 +1159,10 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::armor.armor': ApiArmorArmor;
       'api::campaign.campaign': ApiCampaignCampaign;
       'api::character.character': ApiCharacterCharacter;
+      'api::weapon.weapon': ApiWeaponWeapon;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

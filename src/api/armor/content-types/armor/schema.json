@@ -1,0 +1,53 @@
+{
+  "kind": "collectionType",
+  "collectionName": "armors",
+  "info": {
+    "singularName": "armor",
+    "pluralName": "armors",
+    "displayName": "Armor"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "armorType": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Light",
+      "enum": [
+        "Light",
+        "Medium",
+        "Heavy"
+      ]
+    },
+    "stealthDisadvantage": {
+      "type": "boolean",
+      "required": true
+    },
+    "baseArmorClass": {
+      "type": "integer",
+      "required": true,
+      "default": 11,
+      "min": 11,
+      "max": 18
+    },
+    "characters": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::character.character",
+      "inversedBy": "armors"
+    },
+    "equippedByCharacters": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::character.character",
+      "mappedBy": "equippedArmor"
+    }
+  }
+}

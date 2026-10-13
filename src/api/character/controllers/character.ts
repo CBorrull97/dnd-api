@@ -95,5 +95,27 @@ export default factories.createCoreController(
       );
       return this.transformResponse!(sanitizedCharacter);
     },
+
+    async transferCampaign(ctx) {
+      const { documentId } = ctx.params;
+      const targetCampaignDocumentId =
+        ctx.request.body?.data?.targetCampaignDocumentId;
+      if (
+        typeof targetCampaignDocumentId !== "string" ||
+        targetCampaignDocumentId.trim().length === 0
+      ) {
+        return ctx.badRequest(
+          "targetCampaignDocumentId must be a non-empty string",
+        );
+      }
+      const updatedCharacter = await strapi
+        .service("api::character.character")
+        .transferCampaign(documentId, targetCampaignDocumentId);
+      const sanitizedCharacter = await this.sanitizeOutput!(
+        updatedCharacter,
+        ctx,
+      );
+      return this.transformResponse!(sanitizedCharacter);
+    },
   }),
 );

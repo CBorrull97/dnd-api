@@ -48,6 +48,15 @@ const routes: Core.RouterConfig = {
         middlewares: [],
       },
     },
+    {
+      method: "POST",
+      path: "/characters/:documentId/transfer-campaign",
+      handler: "api::character.character.transferCampaign",
+      config: {
+        policies: ["api::character.require-game-master-key"],
+        middlewares: ["api::character.audit-character-action"],
+      },
+    },
   ],
 };
 

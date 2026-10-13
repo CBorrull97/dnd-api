@@ -120,5 +120,42 @@ export default factories.createCoreService(
       });
       return updatedCharacter;
     },
+    async transferCampaign(
+      characterDocumentId: string,
+      campaignDocumentId: string,
+    ) {
+      const character = await super.findOne(characterDocumentId, {
+        populate: {
+          campaign: true,
+        },
+      });
+      if (!character) {
+        throw new errors.NotFoundError("Character not found");
+      }
+      const campaign = await strapi
+        .service("api::campaign.campaign")
+        .findOne(campaignDocumentId);
+      if (!campaign) {
+        throw new errors.NotFoundError("Target campaign not found");
+      }
+      if (!campaign.active) {
+        throw new errors.ValidationError("Target campaign is not active");
+      }
+      const currentCampaign = character.campaign.documentId;
+      if (currentCampaign === campaignDocumentId) {
+        throw new errors.ValidationError(
+          "Target campaign is the current campaign",
+        );
+      }
+      const updatedCharacter = await super.update(characterDocumentId, {
+        data: {
+          campaign: campaignDocumentId,
+        },
+        populate: {
+          campaign: true,
+        },
+      });
+      return updatedCharacter;
+    },
   }),
 );
